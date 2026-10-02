@@ -1,0 +1,84 @@
+package main
+
+import (
+	"context"
+	"errors"
+	"log"
+	"net/http"
+	"time"
+
+	"://github.com"
+	"gorm.io/gorm"
+)
+
+// Define your GORM model
+type User struct {
+	gorm.Model
+	Name  string `json:"name"`
+	Email string `json:"email" gorm:"uniqueIndex;not null"`
+}
+
+func main() {
+	// Initialize Database Connection (from our previous step)
+	ConnectDB()
+	
+	// Automatically migrate schema during setup
+	DB.AutoMigrate(&User{})
+
+	// Set Gin to production mode for performance (disables debug logging)
+	// gin.SetMode(gin.ReleaseMode)
+
+	// Initialize Gin Engine
+	r := gin.Default()
+
+	// Setup API Endpoints
+	api := r.Group("/api/v1")
+	{
+		api.POST("/users", CreateUserHandler)
+		api.GET("/users", GetUsersHandler)
+	}
+
+	// Launch server on port 3000
+	log.Fatal(r.Run(":3000"))
+}
+
+// Handler: Create User
+func CreateUserHandler(c *gin.Context) {
+	// Note: We use a pointer (&user) so Gin can populate our local struct
+	var user User
+	
+	// ShouldBindJSON automatically reads the body and maps it to the struct pointers
+	if err := c.ShouldBindJSON(&user); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request input"})
+		return // You must return manually in Gin to stop execution
+	}
+
+	// GORM database insert execution
+	if err := DB.Create(&user).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not create user record"})
+		return
+	}
+
+	c.JSON(http.StatusCreated, user)
+}
+
+// Handler: Fetch Users (With Timeout Queue Safety)
+func GetUsersHandler(c *gin.Context) {
+	// Creating a timeout context using the request context
+	ctx, cancel := context.WithTimeout(c.Request.Context(), 3*time.Second)
+	defer cancel()
+
+	var users []User
+	
+	// Passing our safe context to GORM
+	if err := DB.WithContext(ctx).Find(&users).Error; err != nil {
+		if errors.Is(ctx.Err(), context.DeadlineExceeded) {
+			c.JSON(http.StatusServiceUnavailable, gin.H{"error": "Server is too busy right now"})
+			return
+		}
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error fetching records"})
+		return
+	}
+
+	c.JSON(http.StatusOK, users)
+}
