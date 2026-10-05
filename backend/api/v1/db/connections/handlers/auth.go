@@ -18,7 +18,7 @@ type Register struct {
 }
 type Login struct {
  Email string `json:"email" binding:"required,email"`	
- Password string `json:"password" binding:"required,min=9, max=15"`
+ Password string `json:"password" binding:"required,min=9,max=15"`
 }
 func generateSessionID() string {
  b := make([]byte, 32)
