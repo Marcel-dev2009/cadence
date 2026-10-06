@@ -1,12 +1,10 @@
 package middlewares
 
 import (
-"net/http"
-"time"
-"github.com/gin-gonic/gin"
-"github.com/patrickmn/go-cache"
+	"net/http"
+	"github.com/Marcel-dev2009/cadence/db/config"
+	"github.com/gin-gonic/gin"
 )
-var SessionCache = cache.New(2*time.Hour, 10*time.Minute)
 func ReadAuth(c *gin.Context) {
   cookie, err := c.Cookie("session_token")
   if err != nil {
@@ -14,7 +12,7 @@ func ReadAuth(c *gin.Context) {
   c.Abort()
   return 
   }	
-  userID, found := SessionCache.Get(cookie)
+  userID, found := config.SessionCache.Get(cookie)
   if !found {
   c.JSON(http.StatusUnauthorized, gin.H{"error":"sesssion expired, please login again"})	
   c.Abort()

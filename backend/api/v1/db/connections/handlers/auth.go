@@ -53,6 +53,7 @@ func SignUp(c *gin.Context){
  }
  // create session
  sessionID := generateSessionID()
+ fmt.Println(sessionID) // here
  config.SessionCache.Set(sessionID, user.ID, cache.DefaultExpiration)
  c.SetCookie(
   "session_token",
@@ -75,7 +76,7 @@ func SignUp(c *gin.Context){
 func SignIn(c *gin.Context){
  var input Login	
  if err := c.ShouldBindJSON(&input); err != nil{
-  c.JSON(http.StatusBadRequest, gin.H{"error":err.Error()})
+   c.JSON(http.StatusBadRequest, gin.H{"error":err.Error()})
   return
  }
 
@@ -128,10 +129,6 @@ func Me (c *gin.Context){
    c.Abort()
    return        
   }
- c.JSON(http.StatusOK, gin.H{
-  "message": "user found",
-   "id" : userID,
-  })
   c.Set("userID", userID)
   c.Next()
  }
