@@ -2,11 +2,10 @@ package handlers
 
 import (
 "net/http"
-
-"github.com/Marcel-dev2009/cadence/db/config"
+"github.com/Marcel-dev2009/cadence/database/config"
+"github.com/Marcel-dev2009/cadence/repository"
 "github.com/gin-gonic/gin"
 )
-
 func UpdateSyncStatus(c *gin.Context){
  db := config.DB	
  userID := c.GetString("userID")
@@ -15,13 +14,12 @@ func UpdateSyncStatus(c *gin.Context){
  c.Abort()
  return
  }	
- result := db.Table("users").Where("id = ?", userID).Update("sync_google_calender", true)
- if result.Error != nil{
+ userRepo := repository.NewUserRepository(db)
+ if err := userRepo.SetgoogleSyncStatus(userID, true); err != nil{
  c.JSON(http.StatusBadRequest, gin.H{"error":"failed to update google sync status"})
  return	
  }
  c.JSON(http.StatusOK, gin.H{
-"message": "Google Calendar sync enabled successfully!",
-"sync":    true,
+"message": "Google Calendar synchronized succesfully",
 })
 }

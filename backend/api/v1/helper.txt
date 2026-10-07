@@ -1,4 +1,0 @@
-//To do 
-Add Batch creation of products
-Fetching of products and appplying api techniques like sorting and filtering according user preference 
-Caching result of the fetch 

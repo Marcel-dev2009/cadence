@@ -2,7 +2,7 @@ package middlewares
 
 import (
 	"net/http"
-	"github.com/Marcel-dev2009/cadence/db/config"
+	"github.com/Marcel-dev2009/cadence/database/config"
 	"github.com/gin-gonic/gin"
 )
 func ReadAuth(c *gin.Context) {

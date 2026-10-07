@@ -22,3 +22,11 @@ User *User `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE;"json:"-"`
 CreatedAt   time.Time `gorm:"autoCreateTime" json:"created_at"`
 UpdatedAt   time.Time `gorm:"autoUpdateTime" json:"updated_at"`
 }
+type EventMetaData struct {
+EventID    string    `gorm:"serializer:json;type:jsonb"`
+EventName  string    `gorm:"serializer:json;type:jsonb"`
+EventTime *time.Time `gorm:"serializer:json;type:jsonb"`
+EventStatus string   `gorm:"serializer:json;type:jsonb"`
+CreatedAt   time.Time  `gorm:"serializer:json;type:jsonb"`
+UpdatedAt   time.Time `gorm:"serializer:json;type:jsonb"`
+}

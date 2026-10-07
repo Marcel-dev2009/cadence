@@ -1,0 +1,68 @@
+package repository
+
+import (
+	"time"
+	"://github.com"
+	"gorm.io/gorm"
+)
+
+type EventsRepository struct {
+	DB    *gorm.DB
+	Cache CacheStore // Using the clean interface pattern we talked about earlier!
+}
+
+func NewEventsRepository(db *gorm.DB, cache CacheStore) *EventsRepository {
+	return &EventsRepository{DB: db, Cache: cache}
+}
+
+// 1. READ OPERATION: Tries cache first, falls back to DB
+func (r *EventsRepository) GetEventsByUserID(userID string) ([]models.ScheduledEvents, error) {
+	cacheKey := "user_events:" + userID
+
+	// Try to grab it from go-cache first
+	if cachedData, found := r.Cache.Get(cacheKey); found {
+		// Type assert the cache data back into our slice
+		if events, ok := cachedData.([]models.ScheduledEvents); ok {
+			println("DEBUG: Fetching events from RAM Cache! ⚡")
+			return events, nil
+		}
+	}
+
+	// Cache miss! Walk to the back room (Neon Database)
+	var events []models.ScheduledEvents
+	err := r.DB.Table("scheduled_events").Where("user_id = ?", userID).Find(&events).Error
+	if err != nil {
+		return nil, err
+	}
+
+	// Save to go-cache for next time (expires in 10 minutes)
+	r.Cache.Set(cacheKey, events, 10*time.Minute)
+	println("DEBUG: Cache missed. Saved fresh data from Neon to RAM 💾")
+
+	return events, nil
+}
+
+// 2. WRITE OPERATION: Saves to DB, then wipes the cache
+func (r *EventsRepository) CreateEvent(event *models.ScheduledEvents) error {
+	// Push to database safe first
+	if err := r.DB.Create(event).Error; err != nil {
+		return err
+	}
+
+	// Cache Busting: Wipe out this user's specific events list cache key
+	cacheKey := "user_events:" + event.UserID
+	r.Cache.Delete(cacheKey)
+	println("DEBUG: New event created! Cache cleared for user: " + event.UserID)
+
+	return nil
+}
+
+
+type CacheStore interface {
+	Set(key string, value any, duration time.Duration)
+	Get(key string) (any, bool)
+	Delete(key string)
+}
+
+
+

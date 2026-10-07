@@ -5,8 +5,9 @@ import (
 	"encoding/hex"
 	"fmt"
 	"net/http"
-	"github.com/Marcel-dev2009/cadence/db/config"
-	"github.com/Marcel-dev2009/cadence/db/connections/models"
+
+	"github.com/Marcel-dev2009/cadence/database/config"
+	"github.com/Marcel-dev2009/cadence/database/models"
 	"github.com/gin-gonic/gin"
 	"github.com/patrickmn/go-cache"
 	"golang.org/x/crypto/bcrypt"

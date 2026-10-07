@@ -3,8 +3,8 @@ package routes
 import (
 	"net/http"
 
-	"github.com/Marcel-dev2009/cadence/db/connections/handlers"
-	"github.com/Marcel-dev2009/cadence/db/me/middlewares"
+	"github.com/Marcel-dev2009/cadence/api/v1/handlers"
+	"github.com/Marcel-dev2009/cadence/database/me/middlewares"
 	"github.com/gin-gonic/gin"
 )
 func Setup(r *gin.Engine){

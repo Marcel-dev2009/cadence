@@ -1,14 +1,15 @@
 package config
 
 import (
-"fmt"
-"log"
-"os"
-"github.com/Marcel-dev2009/cadence/db/connections/models"
-"github.com/gin-contrib/cors"
-"github.com/joho/godotenv"
-"gorm.io/driver/postgres"
-"gorm.io/gorm"
+	"fmt"
+	"log"
+	"os"
+
+	"github.com/Marcel-dev2009/cadence/database/models"
+	"github.com/gin-contrib/cors"
+	"github.com/joho/godotenv"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 func Load(){
  _ = godotenv.Load()
