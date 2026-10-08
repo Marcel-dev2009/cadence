@@ -1,0 +1,1 @@
+# stores API keys (Open AI or gemini) and Go base URls
