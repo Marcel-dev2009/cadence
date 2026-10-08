@@ -15,6 +15,7 @@ import (
 func main() {	
  config.Load()
  config.SessionCache = cache.New(14*25*time.Hour, 10*time.Minute)
+ config.DataListCache = cache.New(2*time.Hour, 10*time.Minute)
  r := gin.Default();
  r.Use(cors.New(config.CORSConfig()))
  r.GET("/", func(c *gin.Context){

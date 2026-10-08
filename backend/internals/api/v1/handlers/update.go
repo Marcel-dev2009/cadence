@@ -7,19 +7,39 @@ import (
 "github.com/gin-gonic/gin"
 )
 func UpdateSyncStatus(c *gin.Context){
- db := config.DB	
+  var db = config.DB	
+ var dataCache = config.DataListCache
  userID := c.GetString("userID")
  if userID == ""{
  c.JSON(http.StatusUnauthorized, gin.H{"error":"user id not found"})	
  c.Abort()
  return
  }	
- userRepo := repository.NewUserRepository(db)
+ userRepo := repository.NewUserRepository(db, dataCache)
  if err := userRepo.SetgoogleSyncStatus(userID, true); err != nil{
  c.JSON(http.StatusBadRequest, gin.H{"error":"failed to update google sync status"})
  return	
  }
  c.JSON(http.StatusOK, gin.H{
 "message": "Google Calendar synchronized succesfully",
+})
+}
+
+func UpdateSpotifySyncStatus(c *gin.Context){
+  var db = config.DB	
+ var dataCache = config.DataListCache
+ userID := c.GetString("userID")
+ if userID == ""{
+ c.JSON(http.StatusUnauthorized, gin.H{"error":"user id not found"})	
+ c.Abort()
+ return
+ }	
+ userRepo := repository.NewUserRepository(db, dataCache)
+ if err := userRepo.SetSpotifySyncStatus(userID, true); err != nil{
+ c.JSON(http.StatusBadRequest, gin.H{"error":"failed to update spotify sync status"})
+ return	
+ }
+ c.JSON(http.StatusOK, gin.H{
+"message": "Spotify synchronized succesfully",
 })
 }

@@ -46,7 +46,7 @@ func SignUp(c *gin.Context){
  user := models.User{
  Name: input.Name,
  Email: input.Email,
- Password: string(hashedPassword),	
+ Password: string(hashedPassword),
  }
  if err = config.DB.Create(&user).Error; err != nil{
  c.JSON(http.StatusInternalServerError, gin.H{"error":"error creating user"})	
