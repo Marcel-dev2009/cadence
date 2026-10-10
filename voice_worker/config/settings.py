@@ -11,7 +11,7 @@ class Settings:
           WORKER_HOST:str = os.getenv("WORKER_HOST", "0.0.0.0") 
           WORKER_PORT:int = int(os.getenv("WORKER_PORT", 8081))
           # Golang backend integration we'll test the url if we use base url or the postfixed url
-          GO_URL:str = os.getenv("GO_URL", "http://localhost:8080/api/v1")
+          GO_URL:str = os.getenv("GO_URL", "http://localhost:8080")
           def validate(self):
                   if not self.AI_API_KEY:
                           print("API key missing please, ensure it's provided on your envars")

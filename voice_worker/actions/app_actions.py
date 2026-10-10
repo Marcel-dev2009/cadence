@@ -1,1 +1,26 @@
-# Format system tool output e.g changing themes and changing routes to settings {"action":"change_theme", "value":"dark"}
+class AppActions:
+          @staticmethod
+          def format_theme_mode (theme_value:str) -> dict:
+                  mode = theme_value.strip().lower if theme_value else "light"
+                  if not mode in ["dark", "light"]:
+                          mode = "light"
+                  return{
+                          "action_type":"ui_update",
+                          "target":"theme",
+                          "payload":{
+                             "mode": mode     
+                          }
+                  }
+          @staticmethod
+          def format_navigation(screen_name:str) -> dict:
+                  route_map = {
+                         "/settings" 
+                  }
+                  target_route = route_map.get(screen_name.strip().lower(), "/home")
+                  return {
+                    "action_type": "navigation",
+                    "target": "route",
+                    "payload": {
+                    "path": target_route
+                    }
+        }
