@@ -1,8 +1,9 @@
-import base64
+import base64 #potent
 import uvicorn
-from fastapi import FastAPI, UploadFile, HTTPException
+from fastapi import FastAPI, UploadFile, HTTPException, File
 from fastapi.middleware import cors
 from core import core_state_manager
+from fastapi.concurrency import run_in_threadpool
 from services import stt_service_engine, tts_service_engine
 from actions import call_backend, app_action_instruct
 app = FastAPI(
@@ -20,14 +21,14 @@ app.add_middleware(
 async def process_voice_file(file:UploadFile = File(...)):
           if not file:
                   raise HTTPException(status_code=400, detail="No audio file provided")
-          if not core_state_manager.try_processing_lock():
+          if  core_state_manager.try_processing_lock():
                   raise HTTPException(
                           status_code=429,
                           detail="System is currently busy"
                   )
           try:
                   audio_bytes = await file.read()
-                  ai_result = stt_service_engine.transcribe_and_route(audio_bytes)
+                  ai_result = await run_in_threadpool(stt_service_engine.transcribe_and_route(audio_bytes))
                   intent = ai_result.get("intent", "unknown")
                   client_directive = {}
                   voice_reply_text = "Voice Operation Completed Succesfully"
@@ -42,7 +43,7 @@ async def process_voice_file(file:UploadFile = File(...)):
                   elif  intent == "create_event":
                           time_str = ai_result.get("event_time","")
                           name = ai_result.get("event_name", "new event")
-                          operation_success = call_backend.sync_to_golang(event_name=name, event_time=time_str)
+                          operation_success = await run_in_threadpool(call_backend.sync_to_golang(event_name=name, event_time=time_str))
                           if operation_success:
                                   voice_reply_text = f"Successfully scheduled an event for {name} to take place at {time_str}"
                                   client_directive = {
@@ -54,7 +55,7 @@ async def process_voice_file(file:UploadFile = File(...)):
                                   voice_reply_text = f"Sorry I ran into an error scheduling {name}"
                                   client_directive = {"action_type": "error", "payload": {"message": "Go Backend connection failure"}}
                   else:
-                          voice_reply_text = "I'm not completley sure how to process that command yet"
+                          voice_reply_text = "I'm not completely sure how to process that command yet"
                           client_directive = {
                                   "action_type":"unknown",
                                   "target":"nil",
@@ -62,7 +63,7 @@ async def process_voice_file(file:UploadFile = File(...)):
                           }
                   reply_audio_base64 = ""
                   if operation_success:
-                          audio_data = tts_service_engine.synthesize_speech(voice_reply_text)
+                          audio_data = await run_in_threadpool(tts_service_engine.synthesize_speech(voice_reply_text))
                           reply_audio_base64 = base64.b64encode(audio_data).decode('utf-8')  
                   return {
                     "intent": intent,
