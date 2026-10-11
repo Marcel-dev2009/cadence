@@ -1,7 +1,6 @@
-from .intent_engine import IntentEngine
-from .stt_service import STTService
+from .utils import IntentEngine, STTService
 from .tts_service import TTSService
-engine = IntentEngine()
+intent_service_engine = IntentEngine()
 stt_service_engine = STTService()
 tts_service_engine = TTSService()
-__all__ = ["engine", "stt_service_engine", "tts_service_engine"]
+__all__ = ["intent_service_engine", "stt_service_engine", "tts_service_engine"]
