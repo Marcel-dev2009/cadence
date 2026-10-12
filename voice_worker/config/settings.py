@@ -6,7 +6,7 @@ load_dotenv(BASE_DIR / ".env")
 class Settings:
           PROJECT_NAME:str = "cadence-ai-worker"
           AI_PROVIDER:str = os.getenv("AI_PROVIDER", "llama")
-          AI_API_KEY:str  = os.getenv("HF_TOKEN", "")
+          AI_API_KEY:str  = os.getenv("GROQ_API_KEY", "")
           # the worker host being 0.0.0.0 means that literally any network host on our LAN can connect it 
           WORKER_HOST:str = os.getenv("WORKER_HOST", "0.0.0.0") 
           WORKER_PORT:int = int(os.getenv("WORKER_PORT", 8081))
