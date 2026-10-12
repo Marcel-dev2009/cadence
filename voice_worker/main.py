@@ -1,5 +1,6 @@
 import base64
 import uvicorn
+import requests
 from fastapi import FastAPI, UploadFile, HTTPException, File
 from fastapi.middleware import cors
 import shutil
@@ -25,6 +26,7 @@ app.add_middleware(
 
 @app.post("/app/voice/process")
 async def process_voice_file(file: UploadFile = File(...)):
+    incoming_cookies = {"session_token":"323f05293ac171e39ce8717d7cefc113d5225022019f2a2b11a201edddafca56"}  #hardcoded token, this is to be sent from flutter client
     # Use a unique per-request safe filename path to prevent cross-user file overwrites
     suffix = os.path.splitext(file.filename)[1] if file.filename else ".wav"
     with tempfile.NamedTemporaryFile(suffix=suffix, delete=False) as temp_buffer:
@@ -57,7 +59,7 @@ async def process_voice_file(file: UploadFile = File(...)):
             name = ai_result.get("event_name", "new event")
             
             # If sync_to_golang is an async coroutine, await it natively without run_in_threadpool
-            operation_success = await call_backend.sync_to_golang(event_name=name, event_time=time_str)
+            operation_success = await call_backend.sync_to_golang(event_name=name, event_time=time_str, append_cookies=incoming_cookies)
             
             if operation_success:
                 voice_reply_text = f"Successfully scheduled an event for {name} to take place at {time_str}"
