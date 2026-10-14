@@ -1,0 +1,7 @@
+Inside the lib folder you're gonna create this sub folders
+1: core: for core code utilities, services(API Integration and constants)
+2: features: for building co-integrated features + it's widgets (think of it as react components) like modules(auth, splash, home screen)
+3: widgets: Reusable UI components
+4: models: for data models are structures.. like a static array sometimes dynamic even + crypto integration stuff
+5: routes: for navigation and routing to places
+6: Assets with sub folders like images, icons and fonts
