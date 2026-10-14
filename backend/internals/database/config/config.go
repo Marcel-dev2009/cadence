@@ -35,7 +35,7 @@ func connectDB(){
 }
 func CORSConfig() cors.Config {
  config := cors.DefaultConfig()
- config.AllowOrigins = []string{"http://localhost:8080"}  
+ config.AllowOrigins = []string{"http://localhost:8080", "http://localhost:8000"}  
  config.AllowMethods = []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"}
  config.AllowHeaders = []string {"Origin", "Content-Type", "Authorization"}
  config.AllowCredentials = true

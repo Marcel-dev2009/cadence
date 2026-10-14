@@ -4,7 +4,6 @@ import (
 	"log"
 	"os"
 	"time"
-
 	"github.com/Marcel-dev2009/cadence/database/config"
 	"github.com/Marcel-dev2009/cadence/database/me/routes"
 	"github.com/gin-contrib/cors"

@@ -26,7 +26,7 @@ app.add_middleware(
 
 @app.post("/app/voice/process")
 async def process_voice_file(file: UploadFile = File(...)):
-    incoming_cookies = {"session_token":"323f05293ac171e39ce8717d7cefc113d5225022019f2a2b11a201edddafca56"}  #hardcoded token, this is to be sent from flutter client
+    incoming_cookies = {"session_token":"c15e00fc7e48f32a57a374be7e139c2447afd056bcf4d06d60f15b7eaca90a9e"}  #hardcoded token, this is to be sent from flutter client
     # Use a unique per-request safe filename path to prevent cross-user file overwrites
     suffix = os.path.splitext(file.filename)[1] if file.filename else ".wav"
     with tempfile.NamedTemporaryFile(suffix=suffix, delete=False) as temp_buffer:

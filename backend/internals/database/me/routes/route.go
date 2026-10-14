@@ -35,7 +35,7 @@ func Setup(r *gin.Engine){
  create.Use(middlewares.ReadAuth)
  {
   create.POST("/create", handlers.CreateEventHandler)
-  create.PATCH("/update_status", handlers.UpdateSyncStatus)
+  create.PATCH("/update_status", handlers.UpdateSyncStatus) 
   create.PATCH("/:id/status", handlers.UpdateEventStatusHandler)
   create.PATCH("/sync_spotify", handlers.UpdateSpotifySyncStatus)
   create.GET("/upcoming_event", handlers.GetDashboardHighlightHandler)
