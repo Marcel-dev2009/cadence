@@ -44,33 +44,34 @@ func createMessage (s *discordgo.Session, m *discordgo.MessageCreate){
  if m.Author.ID == s.State.User.ID{
   return
  }
+
  if m.Content == Prefix+"help" {
-		embed := &discordgo.MessageEmbed{
-			Title:       "🕸️ FUTO Engineering Team Sync Bot Guide",
-			Description: "I process natural language messages and turn them into downloadable `.ics` calendar cards instantly!",
-			Color:       0xDC2626, // Spider-Verse Red
-			Fields: []*discordgo.MessageEmbedField{
-				{
-					Name:   "🚀 Core Command",
-					Value:  "`!create-event [Title] in my dorm room on [Time Phase]`",
-					Inline: false,
-				},
-				{
-					Name:   "💡 Examples That Work",
-					Value:  "• `!create-event Coding marathon in my dorm room on Friday night.`\n• `!create-event UI/UX Design Sprint in my dorm room on tomorrow at 4pm.`\n• `!create-event Systems Review in my dorm room on next Tuesday 10:00.`",
-					Inline: false,
-				},
-				{
-					Name:   "⚙️ Setup Info",
-					Value:  "Simply download the attached file to inject the event straight into your Apple or Google Calendar app.",
-					Inline: false,
-				},
-			},
-			Footer: &discordgo.MessageEmbedFooter{
-				Text: "Built with Go & DiscordGo",
-			},
-			Timestamp: time.Now().Format(time.RFC3339),
-		}
+embed := &discordgo.MessageEmbed{
+	Title:       "🕸️ FUTO Engineering Team Sync Bot Guide",
+	Description: "I process natural language messages and turn them into downloadable `.ics` calendar cards instantly!",
+	Color:       0xDC2626, // Spider-Verse Red
+	Fields: []*discordgo.MessageEmbedField{
+		{
+			Name:   "🚀 Core Command",
+			Value:  "`!create-event [Title] strings(e.g on my dorm room) [Time Phase]` always specify a time zone (AM or PM)",
+			Inline: false,
+		},
+		{
+			Name:   "💡 Examples That Work",
+			Value:  "• `!create-event Coding marathon in my dorm room on Friday night at 8am.`\n• `!create-event UI/UX Design Sprint in my dorm room on tomorrow at 4pm.`\n• `!create-event Systems Review in my dorm room on next Tuesday 10:00.`",
+			Inline: false,
+		},
+		{
+			Name:   "⚙️ Setup Info",
+			Value:  "Simply download the attached file to inject the event straight into your Apple or Google Calendar app.",
+			Inline: false,
+		},
+	},
+	Footer: &discordgo.MessageEmbedFooter{
+		Text: "Built with Go & DiscordGo",
+	},
+	Timestamp: time.Now().Format(time.RFC3339),
+}
 
 		s.ChannelMessageSendEmbed(m.ChannelID, embed)
 		return
