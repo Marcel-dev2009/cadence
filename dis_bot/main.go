@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"log"
+	"net/http"
 	"os"
 	"os/signal"
 	"strings"
@@ -13,6 +15,20 @@ import (
 
 const Prefix = "!"
 func main() {
+ http.HandleFunc("/", func (w http.ResponseWriter, r *http.Request){
+  w.WriteHeader(http.StatusOK)
+  fmt.Fprintf(w, "Core engine running natively as a web service on a cloud server")
+ })
+ port := os.Getenv("PORT")
+ if port == ""{
+   port = "8080"
+ } 
+ go func() {
+  log.Printf("Starting health check on the the cloud server and binding to port:%s", port)
+  if err := http.ListenAndServe(":"+port, nil); err != nil{
+	log.Fatalf("Web server crashed:%v", err)
+  }
+ }()
  token := os.Getenv("DISCORD_TOKEN")
  if token == ""{
   fmt.Println("ERROR:DISCORD_TOKEN envars not set")
@@ -37,7 +53,7 @@ func main() {
  signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt) 
  <-sc 
  dg.Close()
-
+ select{}
 }
  
 func createMessage (s *discordgo.Session, m *discordgo.MessageCreate){
